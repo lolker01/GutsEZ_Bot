@@ -1,34 +1,36 @@
 import logging
+import os
+
 from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
-from config import telegram_bot_token
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
+from dotenv import load_dotenv
+load_dotenv()
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
-
-async def name(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="i just want to be happy")
-async def weather(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="All i see every day is darkness")
-
-if __name__ == '__main__':
-    application = ApplicationBuilder().token(telegram_bot_token).build()
-
-    start_handler = CommandHandler('start', start)
-    application.add_handler(start_handler)
-
-    start_handler = CommandHandler('name', name)
-    application.add_handler(start_handler)
-
-    start_handler = CommandHandler('weather', weather)
-    application.add_handler(start_handler)
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 
+async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(f'Hello {update.effective_user.first_name}')
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(f'Hello, i am Guts_bot! How can i help you?')
+async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    message = update.message.text.lower()
+    if 'привіт' or 'hello' or 'hi' in message:
+        await update.message.reply_text(f'Привіт {update.effective_user.first_name}')
+    else:
+        await update.message.reply_text(f'Шо ти висрав? {update.effective_user.first_name}')
 
-    application.run_polling()
+    await update.message.reply_text(reply_text)
+
+
+app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+
+app.add_handler(CommandHandler("hello", hello))
+
+app.add_handler(CommandHandler("start", start))
+
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+
+app.run_polling()
