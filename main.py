@@ -23,27 +23,27 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if "привіт" in message:
 
         if last_name is None:
-            await update.message.reply_text(f'Привіт {update.effective_user.first_name}')
+            reply_text = f'Привіт {update.effective_user.first_name}'
 
         else:
-            await update.message.reply_text(f'Привіт {update.effective_user.first_name} {update.effective_user.last_name}')
+            reply_text = f'Привіт {update.effective_user.first_name} {update.effective_user.last_name}'
 
     elif "допобачення" in message:
 
         if last_name is None:
-            await update.message.reply_text(f'Бувай {update.effective_user.first_name}')
+            reply_text = (f'Бувай {update.effective_user.first_name}')
 
         else:
-            await update.message.reply_text(f'Привіт {update.effective_user.first_name} {update.effective_user.last_name}')
+            reply_text = (f'Привіт {update.effective_user.first_name} {update.effective_user.last_name}')
 
     else:
 
         if last_name is None:
-            await update.message.reply_text(f'{update.effective_user.first_name}, Шо ти висрав?')
+            reply_text = (f'{update.effective_user.first_name}, Шо ти висрав?')
 
         else:
-            await update.message.reply_text(f'{update.effective_user.first_name} {update.effective_user.last_name}, Шо ти висрав?')
-
+            reply_text = (f'{update.effective_user.first_name} {update.effective_user.last_name}, Шо ти висрав?')
+    await update.message.reply_text(reply_text)
 
 app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
